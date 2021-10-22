@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items>
+    <item>
+        <link>/v22/</link>
+        <text>Главная</text>
+    </item>    
+    <item>
+        <link>/v22/defects</link>
+        <text>Дефекты</text>
+    </item>    
+    <item>
+        <link>/v22/defects?action=new</link>
+        <text>Добавить дефект</text>
+    </item>    
+    <item>
+        <link>/v22/categories</link>
+        <text>Категории</text>
+    </item>    
+</items>

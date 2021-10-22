@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="v22" default="default" basedir=".">
+    <import file="nbproject/build-impl.xml"/>
+    <property file="build.properties" />
+
+    <path id="catalina-ant-classpath">
+        <fileset dir="lib/catalina-ant">
+            <include name="catalina-ant.jar"/>
+            <include name="tomcat-coyote.jar"/>
+            <include name="tomcat-util.jar"/>
+            <include name="tomcat-juli.jar"/>
+        </fileset>
+    </path>
+
+    <property name="war-file-name" value="${project-name}.war" />
+    <property name="source-directory" value="src" />
+    <property name="classes-directory" value="build/web/WEB-INF/classes" />
+    <property name="web-directory" value="web" />
+    <property name="web-xml-file" value="web/WEB-INF/web.xml" />
+    <tstamp prefix="build-info">
+            <format property="current-date" pattern="d-MMMM-yyyy" locale="en" />
+            <format property="current-time" pattern="hh:mm:ss a z" locale="en" />
+            <format property="year-month-day" pattern="yyyy-MM-dd" locale="en" />
+    </tstamp>
+    <property name="build-directory" value="dist" />
+
+
+    <taskdef name="start" classname="org.apache.catalina.ant.StartTask" classpathref="catalina-ant-classpath"/>
+    <taskdef name="stop" classname="org.apache.catalina.ant.StopTask" classpathref="catalina-ant-classpath"/>
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" classpathref="catalina-ant-classpath"/>
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" classpathref="catalina-ant-classpath"/>
+
+    <target name="stop" description="stop application in tomcat">
+            <stop url="${tomcat-manager-url}" username="${tomcat-manager-username}"
+                    password="${tomcat-manager-password}" path="/${project-name}" />
+    </target>
+
+    <target name="start" description="start application in tomcat">
+            <start url="${tomcat-manager-url}" username="${tomcat-manager-username}"
+                    password="${tomcat-manager-password}" path="/${project-name}" />
+    </target>
+
+    <target name="undeploy" description="undeploy from tomcat">
+            <undeploy 
+                    failonerror="no"
+                    url="${tomcat-manager-url}"
+                    username="${tomcat-manager-username}"
+                    password="${tomcat-manager-password}"
+                    path="/${project-name}"
+            />
+    </target>
+
+    <target name="deploy" description="deploy to tomcat">
+            <echo>deploying from client</echo>
+            <deploy 
+                    url="${tomcat-manager-url}"
+                    username="${tomcat-manager-username}"
+                    password="${tomcat-manager-password}"
+                    path="/${project-name}"
+                    war="file:${build-directory}/${war-file-name}"
+            />
+    </target>
+
+    <target name="war" depends="">
+            <mkdir dir="${build-directory}" />
+            <delete file="${build-directory}/${war-file-name}" />
+            <war warfile="${build-directory}/${war-file-name}" webxml="${web-xml-file}">
+                    <classes dir="${classes-directory}" />
+                    <fileset dir="${web-directory}">
+                            <!-- Need to exclude it since webxml is an attribute of the war tag above -->
+                            <exclude name="WEB-INF/web.xml" />
+                    </fileset>
+                    <manifest>
+                            <attribute name="Built-By" value="${builder}" />
+                            <attribute name="Built-On" value="${build-info.current-date}" />
+                            <attribute name="Built-At" value="${build-info.current-time}" />
+                    </manifest>
+            </war>
+    </target>
+
+    <target name="build-and-deploy" depends="war,undeploy,deploy" />
+</project>

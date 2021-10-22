@@ -1,0 +1,8 @@
+<%@ page pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html>
+    <%@include file="/jspf/Head.jspf" %>
+    <body>
+        <%@include file="/jspf/Menu.jspf" %>
+        <div class="container">
+            <div class="mainContent">
